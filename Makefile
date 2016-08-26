@@ -812,10 +812,7 @@ rebindimg merge:
 	@cp $(PROFILE_DIR)/$(FS_KERNEL_IMAGE_NAME)_NAND128 $(IMAGES_DIR)/ras.bin
 	@echo
 	@echo -e "Done! Image $(PROFILE) has been re-bind in $(IMAGES_DIR)."
-	
-	
-	
-	
+
 ###########################################
 #
 # System code clean-up
@@ -994,7 +991,6 @@ genpatch:
 
 patch:
 #	@hostTools/kup_tmp/patch
-	
 
 ###########################################
 #
