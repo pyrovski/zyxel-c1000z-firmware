@@ -1,0 +1,370 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>CenturyLink Modem Configuration</title>
+<link href="../_css/basic.css" rel="stylesheet" type="text/css" />
+<SCRIPT LANGUAGE="JavaScript" SRC="../_js/jquery.min.js" TYPE="text/javascript"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" SRC="../_js/jquery.popupWindow.js" TYPE="text/javascript"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" SRC="../_js/functionsC1000Z.js" TYPE="text/javascript"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" SRC="../_js/ConnectionInfoC1000Z.js" TYPE="text/javascript"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" SRC="../_js/util.js" TYPE="text/javascript"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+var defPrctl = '<%ejGetOther(sysInfo, defaultPrctl)%>';
+var g_ispType = '<%ejGetOther(dslinfo, Protocol)%>';
+
+function Disconnect () {
+	var dwinfo = '<%ejGetOther(dslinfo, Protocol)%>';
+	if (dwinfo == null || (dwinfo != "PPPoA" && dwinfo != "PPPoE") ) {
+		AlertOpen('Disconnect button only apply for PPP mode.' );
+	}
+	else if (pppExist != '1') {
+		AlertOpen('You are about to disconnect from the Internet.' );
+	}
+	else {
+		AlertOpen('You are about to disconnect from the Internet.' );
+		BackgroundUrl('SetpppDown.cgi');
+	}	
+}
+
+function Connect () {
+	var dwinfo = '<%ejGetOther(dslinfo, Protocol)%>';
+	if (dwinfo == null || (dwinfo != "PPPoA" && dwinfo != "PPPoE") ) {
+		AlertOpen('Connect button only apply for PPP mode.' );
+	}
+	else {
+		if ( (linkStatus != 'CONNECTED') || (pppExist == '0')){
+			AlertOpen('Please check if DSL line is connected.' );
+		}
+		else if (sessiontime != 'N/A') {
+			AlertOpen('PPP is already connected.' );
+		}
+		else {
+			AlertOpen('You are about to connect to the Internet.' );
+			BackgroundUrl('SetpppUp.cgi');
+		}
+	}
+}
+
+sessiontime = '<%ejGetOther(dslinfo, PPPTIMER)%>';
+pppusername = '<%ejGetOther(sysInfo, pppUserName)%>';
+pppExist = '<%ejGetOther(dslinfo, PPPDEXIST)%>';
+linkStatus = '<%ejGetOther(sysInfo, status)%>';
+g_protocol = '<%ejGetOther(dslinfo, Protocol)%>';
+function protocolChange()
+{
+	if(g_protocol == null || (g_protocol != "PPPoA" && g_protocol != "PPPoE") ){
+		$('.pppoe_group').hide();
+	} else {
+		$('.pppoe_group').show();
+	}
+}
+
+$(document).ready(function(){
+	protocolChange();
+});
+
+</SCRIPT>
+</head>
+
+<body>
+<div id="wrapper">
+
+   <div id="masthead">
+    <h1 id="modem_type">CenturyLink&reg; Modem Configuration ZyXEL C1000Z</h1>
+      <a href="http://www.CenturyLink.com" id="logo_link" target="_blank">CenturyLink.com</a>
+<script language="javascript">
+   WriteMenuHeader('modemstatus', '<%ejGetOther(isSupportConsoleAllowed)%>');
+</script>
+		
+		<a href="_html/help.html" title="Click here to launch" class="helplink">help</a>
+      <div id="date">
+        <script language="javascript">
+		WriteDateTime('<%ejGetOther(sysInfo, dateTime)%>');
+        </script>
+  </div>
+<script language="JavaScript">
+	WriteLogout('<%ejGetOther(isLogin)%>');
+</script>
+	<div class="clear_left"></div>
+	<div id="content_left">
+			<div id="subnav_header"></div>
+			<ul id="subnav">
+<script language="javascript">
+   WriteModemStatusMenuHeader('connectionstatus');
+</script>
+			</ul>			
+			
+			<div id="subnav_footer"></div>
+			<div id="connectionstatus_header"></div>
+			<div id="connectionstatus_header"></div>
+      <div id="connectionstatus">
+        <h1>Connection Status</h1>
+        <div id="connectionstatus_wrapper">
+        <script language="javascript">        	
+<!-- hide
+	document.writeln('<h2>CenturyLink<sup>&reg;</sup> DSL</h2><span id="broadband2">');
+	var dslStatus = '<%ejGetOther(sysInfo, status)%>';
+	var upRate = '<%ejGetOther(lineRate, 0, 0)%>';
+	var downRate = '<%ejGetOther(lineRate, 1, 0)%>';
+	if (dslStatus == 'CONNECTED'){
+	     document.writeln('<img src="../_images/connectionStatus_Connected.png" alt="Connected" width="152" height="25" />');
+	     document.writeln('<p class="connected">'+ downRate + '/' + upRate + ' Mbps</p>');
+	}
+	else if (dslStatus == 'CONNECTING')
+	{
+	     document.writeln('<img src="../_images/connectionStatus_Connecting.png" alt="Connecting" width="152" height="25" /><p class="notconnected">N/A Mbps</p>');
+	}
+	else
+	{
+	     document.writeln('<img src="../_images/connectionStatus_notConnected.png" alt="Not Connected" width="152" height="25" />');
+	     document.writeln('<p class="notconnected">N/A Mbps</p>');
+	}
+	document.writeln('</span>');
+  document.writeln('<h2>Internet Status</h2><span id="ISPSTATS2">');
+
+  var wanStatus = '<%ejGetOther(sysInfo, defaultWan)%>';
+
+  if (wanStatus == 'CONNECTED')
+      document.writeln('<img src="../_images/connectionStatus_Connected.png" alt="Connected" width="152" height="25" />');
+  else if (wanStatus == 'WALLED GARDEN')
+      document.writeln('<img src="../_images/connectionStatus_walledgarden.png" alt="Walled Garden" width="152" height="25" />');
+  else if (wanStatus == 'CONNECTING')
+      document.writeln('<img src="../_images/connectionStatus_Connecting.png" alt="Walled Garden" width="152" height="25" />');
+  else
+      document.writeln('<img src="../_images/connectionStatus_notConnected.png" alt="Not Connected" width="152" height="25" />');
+	document.writeln('</span>');
+				// done hiding -->
+        </script>
+        </div>
+      </div>
+			<div id="connectionstatus_footer"></div>
+  </div>
+		<div id="content_right">
+			<div id="content_right_header"></div>
+		  <div id="content_right_contentarea">
+				<h1 class="modemstatus_home">Connection Status</h1>
+				
+				<div class="stepWrapper"> 
+				<p><strong>Connection Status</strong></p>
+				<table width="80%" border="0" cellpadding="5" cellspacing="0" class="defaultstyle" style="margin:10px auto 0 auto;">
+                  <tr align="center">
+                    <th width="237"><div align="left"><strong>Connection</strong></div>
+                    </th>
+                    <th width="183">
+                      <div align="left"><strong>Status</strong></div>
+                    </th>
+                  </tr>
+                  <tr align="center">
+                    <td><div align="left">CenturyLink DSL:</div>
+                    </td>
+                    <td><div align="left"><span id="broadband">
+<script language="javascript">
+<!-- hide
+var dslStatus = '<%ejGetOther(sysInfo, status)%>';
+
+if (dslStatus == 'CONNECTED')
+	document.writeln('<div align="left"><font color=\"#015F2C\"><strong>'+dslStatus+'</strong></font></div>');
+else if(dslStatus == 'CONNECTING')
+	document.writeln('<div align="left"><font color=\"#D7DB24\"><strong>'+dslStatus+'</strong></font></div>');
+else
+	document.writeln('<div align="left"><font color=\"#FF0000\"><strong>'+dslStatus+'</strong></font></div>');
+// done hiding -->
+</script></span></div>
+                    </td>
+                  </tr>
+                  <tr align="center">
+                    <td><div align="left">Internet:</div>
+                    </td>
+                    <td><div align="left"><span id="ISPSTATS">
+<script language="javascript">
+<!-- hide
+var wanStatus = '<%ejGetOther(sysInfo, defaultWan)%>';
+
+if (wanStatus == 'CONNECTED')
+	document.writeln('<div align="left"><font color=\"#015F2C\"><strong>'+'CONNECTED'+'</strong></font></div>');
+else if (wanStatus == 'WALLED GARDEN')
+	document.writeln('<div align="left"><font color=\"#EDAB12\"><strong>'+wanStatus+'</strong></font></div>');	
+else if (wanStatus == 'CONNECTING')
+	document.writeln('<div align="left"><font color=\"#D7DB24\"><strong>'+wanStatus+'</strong></font></div>');	
+else
+	document.writeln('<div align="left"><font color=\"#FF0000\"><strong>'+wanStatus+'</strong></font></div>');	
+// done hiding -->
+</script></span></div>
+                    </td>
+                  </tr>
+	              	<tr class="pppoe_group">
+	              		<td><a href="#" class="btn" onClick="Connect();">Connect</a></td>
+	              		<td><a href="#" class="btn" onClick="Disconnect();">Disconnect</a></td>
+	              	</tr>
+                </table>
+				</div><!--end of stepWrapper-->
+				<div class="stepWrapper"> 
+				<p><strong>Modem  Status</strong></p>
+				<table width="80%" border="0" cellpadding="5" cellspacing="0" class="defaultstyle" style="margin:10px auto 0 auto;">
+                  <tr align="center">
+                    <th width="237"><div align="left"><strong>Modem Parameter</strong></div>
+                    </th>
+                    <th width="183">
+                      <div align="left"><strong>Status</strong></div>
+                    </th>
+                  </tr>
+                  <tr align="center">
+                    <td><div align="left"><font color="#015F2C"><strong>Firmware Version:</strong></font></div>
+                    </td>
+                    <td><div align="left"><font color="#015F2C"><strong>CZC001-4.12.008.13</strong></font></div>
+                    </td>
+                  </tr>
+                  <tr align="center">
+                    <td><div align="left">Model Number:</div>
+                    </td>
+                    <td><div align="left">C1000Z</div>
+                    </td>
+                  </tr>
+                  <tr align="center">
+                    <td><div align="left">Hardware Revision:</div>
+                    </td>
+                    <td><div align="left">A0B</div>
+                    </td>
+                  </tr>
+                  <tr align="center">
+                    <td><div align="left">Serial Number:</div></td>
+                    <td><div align="left"><%ejGet(serialNo)%></div></td>
+                  </tr>
+                  <tr align="center">
+                    <td><div align="left">WAN MAC Address:</div></td>
+                    <td><div align="left">
+<script language="javascript">
+   var wanMac = '<%ejGetOther(dslinfo, DSLWAMMAC)%>';
+   document.writeln(wanMac.toUpperCase());
+</script></span>
+                    </div></td>
+                  </tr>
+                  <tr align="center">
+                    <td><div align="left">Downstream Rate:</div></td>
+                    <td><div align="left"><span id="dspeed"><%ejGetOther(lineRate, 1, 0)%></span> Mbps</div></td>
+                  </tr>
+                  <tr align="center">
+                    <td><div align="left">Upstream Rate:</div></td>
+                    <td><div align="left"><span id="uspeed"><%ejGetOther(lineRate, 0, 0)%></span> Mbps</div></td>
+                  </tr>
+                  <tr align="center">
+                    <td><div align="left">ISP Protocol:</div></td>
+                    <td><div align="left"><span id="ISPPROTO"><%ejGetOther(dslinfo, Protocol)%></span></div></td>
+                  </tr>
+                  <tr align="center">
+                    <td><div align="left">PPP User Name:</div></td>
+                    <td><div align="left"><span id="USERNAME">
+<script language="javascript">
+var pppuser = '<%ejGetOther(sysInfo, pppUserName)%>';
+if (pppuser == null || pppuser == 'N/A' ) {
+	document.writeln('N/A');
+}
+else {
+	document.writeln(pppuser);
+}
+</script></span>
+                    	</div></td>
+                  </tr>
+                  <tr align="center">
+                    <td><div align="left">IP Connection Type:</div></td>
+                    <td><div align="left"><span id="IPCONNTYPE"><%ejGetOther(sysInfo, ipConnType)%></span></div></td>
+                  </tr>
+                  <tr align="center">
+                    <td><div align="left"><font color="#015F2C"><strong>Modem IPv4 Address:</strong></font></div></td>
+                    <td><div align="left"><span id="ModemIP">
+<script language="javascript">
+	var wanip = '<%ejGetOther(dslinfo, WANIP)%>';
+	var wanStatus = '<%ejGetOther(sysInfo, defaultWan)%>';
+
+	if ( wanip == '' || wanip == '&nbsp;' || wanip == '0.0.0.0' || wanip == 'N/A' || (wanStatus != 'CONNECTED' && wanStatus != 'WALLED GARDEN') ) {
+		document.writeln( 'N/A' );
+	}
+	else {
+		document.writeln( "<font color=\"#015F2C\"><strong>"+wanip+"</strong></font>" );
+	}
+</script></span>
+                    </div></td>
+                  </tr>
+
+                  <tr align="center">
+                    <td><div align="left">DNS Address #1:</div></td>
+                    <td><div align="left"><span id="ModemDNS1">
+<script language="javascript">
+	var dns1 = '<%ejGetOther(sysInfo, dns1)%>';
+	var wanStatus = '<%ejGetOther(sysInfo, defaultWan)%>';
+	if ( dns1 == '&nbsp' || dns1 == '0.0.0.0' ||(wanStatus != 'CONNECTED' && wanStatus != 'WALLED GARDEN') || g_ispType == 'Transparent Bridging' ) {
+		dns1 = 'N/A';
+	}
+	document.writeln( dns1 );
+</script></span>
+                    	</div></td>
+                  </tr>
+                  <tr align="center">
+                    <td><div align="left">DNS Address #2:</div></td>
+                    <td><div align="left"><span id="ModemDNS2">
+<script language="javascript">
+	var dns2 = '<%ejGetOther(sysInfo, dns2)%>';
+	var wanStatus = '<%ejGetOther(sysInfo, defaultWan)%>';
+	if ( dns2 == '&nbsp' || dns2 == '0.0.0.0' || (wanStatus != 'CONNECTED' && wanStatus != 'WALLED GARDEN') || g_ispType == 'Transparent Bridging' ) {
+		dns2 = 'N/A';
+	}
+	document.writeln( dns2 );
+</script></span>
+                    </div></td>
+                  </tr>
+                  <tr align="center">
+                    <td><div align="left"><font color="#015F2C"><strong>Modem IPv6 Address:</strong></font></div></td>
+                    <td><div align="left"><span id="ModemIPv6addr">
+<script language="javascript">
+	var wanipv6addrInfo = '<%ejGetOther(dslinfo, WANIPv6)%>';
+	var wanStatus = '<%ejGetOther(sysInfo, defaultWan)%>';
+	if ( wanipv6addrInfo == '' || wanipv6addrInfo == '&nbsp' || wanipv6addrInfo == 'N/A' || (wanStatus != 'CONNECTED' && wanStatus != 'WALLED GARDEN') ) {
+		document.writeln( 'N/A' );
+	}
+	else {
+		document.writeln( "<font color=\"#015F2C\"><strong>"+wanipv6addrInfo+"</strong></font>" );
+	}
+</script></span>
+                    </div></td>
+                  </tr>
+                  <tr align="center">
+                    <td><div align="left">DNSv6 Address #1:</div></td>
+                    <td><div align="left"><span id="ModemIPv6DNS1">
+<script language="javascript">
+	var dns6Pri = '<%ejGetOther(sysInfo, dns6Pri)%>';
+	var wanStatus = '<%ejGetOther(sysInfo, defaultWan)%>';
+   var wanipv6addrInfo = '<%ejGetOther(dslinfo, WANIPv6)%>';
+
+	if ( dns6Pri == '&nbsp' || (wanStatus != 'CONNECTED' && wanStatus != 'WALLED GARDEN') || dns6Pri == '' || g_ispType == 'Transparent Bridging' || wanipv6addrInfo == 'N/A' ) {
+		dns6Pri = 'N/A';
+	}
+	document.writeln( dns6Pri );
+</script></span>
+                    </div></td>
+                  </tr>
+                  <tr align="center">
+                    <td><div align="left">DNSv6 Address #2:</div></td>
+                    <td><div align="left"><span id="ModemIPv6DNS2">
+<script language="javascript">
+	var dns6Sec = '<%ejGetOther(sysInfo, dns6Sec)%>';
+	var wanStatus = '<%ejGetOther(sysInfo, defaultWan)%>';
+   var wanipv6addrInfo = '<%ejGetOther(dslinfo, WANIPv6)%>';
+
+	if ( dns6Sec == '&nbsp' || (wanStatus != 'CONNECTED' && wanStatus != 'WALLED GARDEN') || dns6Sec == '' || g_ispType == 'Transparent Bridging' || wanipv6addrInfo == 'N/A' ) {
+		dns6Sec = 'N/A';
+	}
+	document.writeln( dns6Sec );
+</script></span>
+                    </div></td>
+                  </tr>
+                </table>
+				</div><!--end of stepWrapper-->
+		  </div>
+		</div>
+		<div class="clear_left"></div>
+		<div id="footer">Copyright &copy; 2012, CenturyLink Inc., All Rights Reserved.</div>
+</div>
+</body>
+</html>
