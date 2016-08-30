@@ -13,3 +13,6 @@ The final image is located in the images subdirectory.  This image can be
 specified in the DSL-401GNU-B1Bv2 Web interface image upgrade item in order to
 upgrade the DSL router image.
 
+The primary tar file is here:
+https://drive.google.com/open?id=0B2C4RYQ4v4sMVjFvbjYwckpQQ1k
+It contains a 32-bit x86->MIPS toolchain and the original version of the source in this repo.
